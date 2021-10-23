@@ -78,6 +78,9 @@ def answer_combinations(
     strs = []
     indices = []
     for combo in itertools.product(*([range(len(hand))] * pick)):
+        if len(set(combo)) != len(combo):
+            # Using one card multiple times.
+            continue
         strs.append(" ".join(hand[i] for i in combo))
         indices.append(combo)
     return strs, indices
