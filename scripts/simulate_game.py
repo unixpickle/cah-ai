@@ -8,7 +8,7 @@ import random
 from typing import List, Tuple
 
 import numpy as np
-from cah_ai import Deck, DescPlayer, Scorer
+from cah_ai import Deck, DescPlayer, RandomPlayer, Scorer
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
         DescPlayer("a college frat boy", personality_power=5.0),
         DescPlayer("a middle-aged man", personality_power=2.0),
         DescPlayer("an old racist southern lady", personality_power=1.0),
-        DescPlayer("a generic person", personality_power=0.0),
+        RandomPlayer(),
     ]
 
     print("Setting up deck...")
@@ -37,7 +37,7 @@ def main():
     tally = [0] * len(players)
     judge = 0
     while len(deck.prompts):
-        next_prompt = deck.prompts.pop()
+        prompt = deck.prompts.pop()
         played_answers = []
         played_players = []
         for i, (player, hand) in enumerate(zip(players, player_hands)):
@@ -46,8 +46,8 @@ def main():
 
             # Brute-force pick the best combination of answer cards.
             # Usually the answer is just one card, but not always.
-            combos, indices = answer_combinations(hand, next_prompt.pick)
-            probs = scorer.scores(next_prompt.text, [player], combos)[0]
+            combos, indices = answer_combinations(hand, prompt.pick)
+            probs = scorer.scores(prompt.text, [player], combos)[0]
             choice = np.random.choice(len(probs), p=probs)
             played_answers.append(combos[choice])
             played_players.append(i)
@@ -58,10 +58,12 @@ def main():
             while len(hand) < 7:
                 hand.append(deck.answers.pop(0))
 
+        print("-----")
+        print(prompt)
+        print(played_answers)
+
         judge_player = players[judge]
-        best = np.argmax(
-            scorer.scores(next_prompt.text, [judge_player], played_answers)[0]
-        )
+        best = np.argmax(scorer.scores(prompt.text, [judge_player], played_answers)[0])
         if best >= judge:
             best += 1
         tally[best] += 1
