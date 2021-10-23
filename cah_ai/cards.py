@@ -16,16 +16,16 @@ class Deck:
     prompts: List[Prompt]
     answers: List[str]
 
+    @classmethod
+    def load(cls, path: Optional[str] = None) -> "Deck":
+        """
+        Load a collection of prompts and answers from a .json.gz file.
 
-def load_cards(path: Optional[str] = None) -> Deck:
-    """
-    Load a collection of prompts and answers from a .json.gz file.
-
-    If no path is specified, this uses the set of official cards from
-    https://crhallberg.com/cah/.
-    """
-    if path is None:
-        path = os.path.join(os.path.dirname(__file__), "cah-cards-compact.json.gz")
-    with gzip.open(path, "rb") as f:
-        data = json.loads(f.read())
-    return Deck(prompts=[Prompt(**x) for x in data["black"]], answers=data["white"])
+        If no path is specified, this uses the set of official cards from
+        https://crhallberg.com/cah/.
+        """
+        if path is None:
+            path = os.path.join(os.path.dirname(__file__), "cah-cards-compact.json.gz")
+        with gzip.open(path, "rb") as f:
+            data = json.loads(f.read())
+        return cls(prompts=[Prompt(**x) for x in data["black"]], answers=data["white"])
