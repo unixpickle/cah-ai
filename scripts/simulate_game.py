@@ -10,6 +10,8 @@ from typing import List, Tuple
 import numpy as np
 from cah_ai import Deck, DescPlayer, RandomPlayer, Scorer
 
+NUM_CARDS = 10
+
 
 def main():
     players = [
@@ -27,8 +29,8 @@ def main():
     print("Dealing...")
     player_hands = []
     for _ in players:
-        player_hands.append(deck.answers[:7])
-        deck.answers = deck.answers[7:]
+        player_hands.append(deck.answers[:NUM_CARDS])
+        deck.answers = deck.answers[NUM_CARDS:]
 
     print("Creating scorer model...")
     scorer = Scorer()
@@ -55,7 +57,7 @@ def main():
             for i in sorted(indices[choice], reverse=True):
                 deck.answers.append(hand[i])
                 del hand[i]
-            while len(hand) < 7:
+            while len(hand) < NUM_CARDS:
                 hand.append(deck.answers.pop(0))
 
         print("-----")
