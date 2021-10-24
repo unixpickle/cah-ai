@@ -65,14 +65,17 @@ class DescPlayer(Player):
     values less than 1.0.
     """
 
-    def __init__(self, description: str, personality_power: float = 1.0):
+    def __init__(
+        self, description: str, personality_power: float = 1.0, temperature: float = 1.0
+    ):
         self.description = description
         self.personality_power = personality_power
+        self.temperature = temperature
 
     def encode_prompt(self, prompt: str) -> str:
         return {
             "desc": f'{self.description} answer to Cards Against Humanity prompt, "{prompt}".',
-            "generic": prompt,
+            "generic": f'answer to Cards Against Humanity prompt, "{prompt}".',
         }
 
     def encode_answer(self, answer: str) -> str:
@@ -94,5 +97,6 @@ class DescPlayer(Player):
         scores = logs["generic"] + self.personality_power * (
             logs["desc"] - logs["generic"]
         )
-        scores = np.exp(scores)
+        scores /= max(1e-5, self.temperature)
+        scores = np.exp(scores - np.max(scores))
         return scores / np.sum(scores)
