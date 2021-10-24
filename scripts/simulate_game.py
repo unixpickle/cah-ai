@@ -14,8 +14,8 @@ from cah_ai import Deck, DescPlayer, RandomPlayer, Scorer
 def main():
     players = [
         DescPlayer("a college frat boy", personality_power=5.0),
-        DescPlayer("a middle-aged man", personality_power=2.0),
-        DescPlayer("an old racist southern lady", personality_power=1.0),
+        DescPlayer("a middle-aged man", personality_power=5.0),
+        DescPlayer("an old racist southern lady", personality_power=5.0),
         RandomPlayer(),
     ]
 

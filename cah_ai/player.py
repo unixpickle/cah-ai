@@ -66,16 +66,23 @@ class DescPlayer(Player):
     """
 
     def __init__(
-        self, description: str, personality_power: float = 1.0, temperature: float = 1.0
+        self,
+        description: str,
+        personality_power: float = 1.0,
+        temperature: float = 1.0,
+        guide_cah: bool = False,
     ):
         self.description = description
         self.personality_power = personality_power
         self.temperature = temperature
+        self.guide_cah = guide_cah
 
     def encode_prompt(self, prompt: str) -> str:
         return {
             "desc": f'{self.description} answer to Cards Against Humanity prompt, "{prompt}".',
-            "generic": f'answer to Cards Against Humanity prompt, "{prompt}".',
+            "generic": prompt
+            if self.guide_cah
+            else f'answer to Cards Against Humanity prompt, "{prompt}".',
         }
 
     def encode_answer(self, answer: str) -> str:
