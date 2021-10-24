@@ -66,6 +66,7 @@ def main():
         best = np.argmax(scorer.scores(prompt.text, [judge_player], played_answers)[0])
         if best >= judge:
             best += 1
+        print(f"judge={judge} best={best}")
         tally[best] += 1
         judge = (judge + 1) % len(players)
 
