@@ -1,3 +1,4 @@
+import random
 from abc import ABC, abstractmethod
 from typing import Dict, List
 
@@ -6,7 +7,7 @@ import numpy as np
 
 class Player(ABC):
     """
-    A Player choses answers to prompt cards based on a "personality".
+    A Player chooses answers to prompt cards based on a "personality".
 
     The encode_prompt() and encode_answer() methods request feature vectors for
     each prompt and answer card. For example, the Player might make decisions
@@ -40,6 +41,14 @@ class Player(ABC):
         array of probabilities (one for each answer).
         """
 
+    @abstractmethod
+    def choose_answer(
+        self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
+    ) -> int:
+        """
+        Like score_answers(), but select an answer as a judge.
+        """
+
 
 class RandomPlayer(Player):
     def encode_prompt(self, prompt: str) -> Dict[str, str]:
@@ -52,6 +61,11 @@ class RandomPlayer(Player):
         self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
     ) -> np.ndarray:
         return np.ones(len(answers)) / len(answers)
+
+    def choose_answer(
+        self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
+    ) -> int:
+        return random.randrange(len(answers))
 
 
 class DescPlayer(Player):
@@ -107,3 +121,9 @@ class DescPlayer(Player):
         scores /= max(1e-5, self.temperature)
         scores = np.exp(scores - np.max(scores))
         return scores / np.sum(scores)
+
+    def choose_answer(
+        self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
+    ) -> int:
+        scores = self.score_answers(prompt, answers)
+        return np.argmax(scores)

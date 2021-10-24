@@ -52,3 +52,20 @@ class Scorer:
             ]
             results.append(player.score_answers(prompt_vecs, answers_vecs))
         return np.stack(results, axis=0)
+
+    def choose(self, prompt: str, player: Player, answers: List[str]) -> int:
+        """
+        For the given judge player, choose the winning card.
+        """
+        enc_prompt = player.encode_prompt(prompt)
+        enc_answers = [player.encode_answer(a) for a in answers]
+
+        prompt_strs = list(
+            set(enc_prompt.values()) | set(x for a in enc_answers for x in a.values())
+        )
+        embs = self.model.encode(prompt_strs)
+        text_to_emb = dict(zip(prompt_strs, embs))
+
+        prompt_vecs = {k: text_to_emb[v] for k, v in enc_prompt.items()}
+        answers_vecs = [{k: text_to_emb[v] for k, v in x.items()} for x in enc_answers]
+        return player.choose_answer(prompt_vecs, answers_vecs)

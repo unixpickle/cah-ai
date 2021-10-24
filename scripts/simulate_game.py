@@ -63,7 +63,7 @@ def main():
         print(played_answers)
 
         judge_player = players[judge]
-        best = np.argmax(scorer.scores(prompt.text, [judge_player], played_answers)[0])
+        best = scorer.choose(prompt.text, judge_player, played_answers)
         if best >= judge:
             best += 1
         print(f"judge={judge} best={best}")
