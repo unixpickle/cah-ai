@@ -50,6 +50,32 @@ class Player(ABC):
         """
 
 
+class LexPlayer(Player):
+    """
+    A Player that uses lexicographical ordering.
+    """
+
+    def encode_prompt(self, prompt: str) -> Dict[str, str]:
+        return {prompt: prompt}
+
+    def encode_answer(self, answer: str) -> Dict[str, str]:
+        return {answer: answer}
+
+    def score_answers(
+        self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
+    ) -> np.ndarray:
+        items = sorted(enumerate(answers), key=lambda x: list(x[1].keys())[0])
+        res = np.zeros([len(answers)])
+        res[items[0][0]] = 1
+        return res
+
+    def choose_answer(
+        self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
+    ) -> int:
+        items = sorted(enumerate(answers), key=lambda x: list(x[1].keys())[0])
+        return items[0][0]
+
+
 class RandomPlayer(Player):
     def encode_prompt(self, prompt: str) -> Dict[str, str]:
         return {}
