@@ -56,10 +56,10 @@ class LexPlayer(Player):
     """
 
     def encode_prompt(self, prompt: str) -> Dict[str, str]:
-        return {prompt: prompt}
+        return {prompt: ""}
 
     def encode_answer(self, answer: str) -> Dict[str, str]:
-        return {answer: answer}
+        return {answer: ""}
 
     def score_answers(
         self, prompt: Dict[str, np.ndarray], answers: List[Dict[str, np.ndarray]]
